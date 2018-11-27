@@ -36,6 +36,7 @@ public class ImplementStackUsingArray {
 		else
 			return false;
 	}
+
 	
 	public void peek() {
 		System.out.println(arr[currentPos]);
