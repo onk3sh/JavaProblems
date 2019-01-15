@@ -78,4 +78,10 @@ class LinkedList{
     	
     	return head;
     }
+
+	public NodeData insertNewNodeAtHead(NodeData head2, int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
 }
