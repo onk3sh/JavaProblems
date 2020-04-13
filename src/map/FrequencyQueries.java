@@ -1,94 +1,119 @@
 package map;
 
 import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
 
 public class FrequencyQueries {
+	
+	static void updateCountMap(int key, Map<Integer, Integer> map, Map<Integer, Integer> count_map, String op) {
+		if(op.toLowerCase() == "sub") {
+			if (count_map.containsKey(map.get(key))){
+				count_map.put(map.get(key), count_map.get(map.get(key)) - 1);
+			}
+			else
+			{
+				count_map.put(map.get(key), 0);
+			}
+		}
+		else {
+			if (count_map.containsKey(map.get(key))){
+				count_map.put(map.get(key), count_map.get(map.get(key)) + 1);
+			}
+			else
+			{
+				count_map.put(map.get(key), 1);
+			}
+		}
+	}
 
 	// Complete the freqQuery function below.
-    static List<Integer> freqQuery(List<List<Integer>> queries) {
+    static List<Integer> freqQuery(List<int[]> queries) {
     	List<Integer> result = new ArrayList<>();
-    	Map<Integer,Integer> numberToCount = new HashMap<>();
-    	Map<Integer, Set<Integer>> countToNumbers = new HashMap<>();
+    	Map<Integer,Integer> map = new HashMap<>();
+    	Map<Integer,Integer> count_map = new HashMap<>();
+    	    	    	
+    	count_map.put(0, 0);
     	
-    	for(List<Integer> list : queries) {
-    		int n1 = list.get(0);
-    		int n2 = list.get(1);
-    		if(n1 == 1) {
-    			int previousCount = numberToCount.getOrDefault(n2, 0);
-    			int currentCount = previousCount + 1;
-    			
-    			numberToCount.put(n2, currentCount);
-    			
-    			if(previousCount !=0) {
-    				countToNumbers.get(previousCount).remove(n2);
-    			}
-    			
-    			if(countToNumbers.containsKey(n2) == false) {
-    				countToNumbers.put(currentCount, new HashSet<>());
-    			}
-    			countToNumbers.get(currentCount).add(n2);
-    		}
-    		else if(n1 == 2) {
-    			int previousCount = numberToCount.get(n2);
-    			int currentCount = previousCount - 1;
-    			
-    			if(currentCount == 0) {
-    				numberToCount.remove(n2);
+    	int op = 0, key = 0;
+    	for(int[] query: queries) {
+    		op = query[0];
+    		key = query[1];
+    		
+    		if(op == 1){
+				updateCountMap(key,map,count_map, "sub");
+    			if(map.containsKey(key)) {
+    				map.put(key, map.get(key) + 1);
     			}
     			else {
-    				numberToCount.put(n2, currentCount);
+    				map.put(key, 1);
     			}
-    			
-    			countToNumbers.get(previousCount).remove(n2);
-    			
-    			if(currentCount != 0) {
-    				countToNumbers.get(currentCount).add(n2);
-    			}
+				updateCountMap(key,map,count_map, "add");
     		}
-    		else if(n1 == 3) {
-    			Set<Integer> temp = countToNumbers.get(n2);
-    			if(temp.isEmpty())
-    				result.add(0);
-    			else
+    		else if(op == 2) {
+				updateCountMap(key,map,count_map, "sub");
+    			if(map.containsKey(key) && map.get(key) > 0) {
+    				map.replace(key, map.get(key) - 1);
+
+    			}
+				updateCountMap(key,map,count_map, "add");
+    		}
+    		else if(op == 3) {
+    			if(count_map.containsKey(key) && count_map.get(key) > 0) {
     				result.add(1);
+    			}
+    			else {
+    				result.add(0);
+    			}
     		}
     	}
-    	
-    	
     	return result;
     }
     
-    private static final Scanner scan = new Scanner(System.in);
 	
     public static void main(String[] args) throws IOException {
-        int q = Integer.parseInt(scan.nextLine().trim());
+    	File file = new File("C:\\Users\\onkesh.bansal\\Desktop\\hr\\fq-3.txt");
+    	BufferedReader bufferedReader = new BufferedReader(new FileReader(file)); 
+    	
+//    	 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+//         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
 
-        List<List<Integer>> queries = new ArrayList<>();
-
+        int q = Integer.parseInt(bufferedReader.readLine().trim());
+        List<int[]> queries = new ArrayList<>(q);
+        Pattern p  = Pattern.compile("^(\\d+)\\s+(\\d+)\\s*$");
         for (int i = 0; i < q; i++) {
-            String[] queriesRowTempItems = scan.nextLine().replaceAll("\\s+$", "").split(" ");
-            List<Integer> queriesRowItems = new ArrayList<>();
-
-            for (int j = 0; j < 2; j++) {
-                int queriesItem = Integer.parseInt(queriesRowTempItems[j]);
-                queriesRowItems.add(queriesItem);
-            }
-
-            queries.add(queriesRowItems);
+          int[] query = new int[2];
+          Matcher m = p.matcher(bufferedReader.readLine());
+          if (m.matches()) {
+            query[0] = Integer.parseInt(m.group(1));
+            query[1] = Integer.parseInt(m.group(2));
+            queries.add(query);
+          }
         }
-
         List<Integer> ans = freqQuery(queries);
 
-        for (int i = 0; i < ans.size(); i++) {
-            System.out.print(String.valueOf(ans.get(i)));
+         for(int i : ans) {
+        	 System.out.println(i);
+         }
+         
+//         bufferedWriter.write(
+//             ans.stream()
+//                 .map(Object::toString)
+//                 .collect(joining("\n"))
+//             + "\n"
+//         );
 
-            if (i != ans.size() - 1) {
-                System.out.print("\n");
-            }
-        }
-        
-        scan.close();
+         bufferedReader.close();
+//         bufferedWriter.close();
     }
 
 }
