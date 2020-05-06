@@ -8,48 +8,75 @@ import java.util.Scanner;
 import java.util.stream.Stream;
 
 public class FraudulentActivityNotification {
-	
-	static int getMedian(int[] arr, int start, int end){
-        int res = 0;
-        
-    }
-    // Complete the activityNotifications function below.
-    static int activityNotifications(int[] arr, int d) {
-        int n = arr.length;
-        
-        return 0;
 
-    }
+	static int getMedian(int[] count, int d) {
+		int sum = 0;
+		for (int i = 0; i < count.length; i++) {
+			sum += count[i];
+			if ((2 * sum) == d) {
+				return 2 * i + 1;
+			} else if (2 * sum > d) {
+				return 2 * i;
+			}
+		}
+		return 1;
+	}
 
-	
-    private static final Scanner scanner = new Scanner(System.in);
+	// Complete the activityNotifications function below.
+	static int activityNotifications(int[] arr, int d) {
+		int[] count = new int[201];
+		int result = 0;
+		for (int i = 0; i < d; i++) {
+			count[arr[i]]++;
+		}
 
-    public static void main(String[] args) throws IOException {
-        //BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
-    	File file = new File("C:\\Users\\onkesh.bansal\\Desktop\\hr\\mt-1.txt");
-    	BufferedReader bufferedReader = new BufferedReader(new FileReader(file)); 
-    	
-    	String[] nr = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+		for (int i = d; i < arr.length; i++) {
+			int median = getMedian(count, d);
+			if (median <= arr[i]) {
+				result++;
+			}
+			count[arr[i - d]]--;
+			count[arr[i]]++;
+		}
 
-        int n = Integer.parseInt(nr[0]);
-        int[] expenditure = new int[n];
-        int d = Integer.parseInt(nr[1]);
+		return result;
+	}
 
-        expenditure = Stream.of(bufferedReader.readLine()
-        		.replaceAll("\\s+$", "").split(" "))
-        		.mapToInt(x -> Integer.parseInt(x))
-        		.toArray();
+	private static final Scanner scanner = new Scanner(System.in);
 
-        int result = activityNotifications(expenditure, d);
-        
-        System.out.println(result);
+	public static void main(String[] args) throws IOException {
+		long startTime = System.currentTimeMillis();
+
+		// BufferedWriter bufferedWriter = new BufferedWriter(new
+		// FileWriter(System.getenv("OUTPUT_PATH")));
+
+		File file = new File("C:\\Users\\onkesh.bansal\\Desktop\\hr\\fan-1.txt");
+		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+
+		String[] nr = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+
+		int n = Integer.parseInt(nr[0]);
+		int[] expenditure = new int[n];
+		int d = Integer.parseInt(nr[1]);
+
+		expenditure = Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+				.mapToInt(x -> Integer.parseInt(x)).toArray();
+
+		int result = activityNotifications(expenditure, d);
+
+		System.out.println(result);
+
+		long endTime = System.currentTimeMillis();
+		// calculate time difference
+		long timeDiff = endTime - startTime;
+		System.out.println("Elapsed time: " + timeDiff + " ms");
 
 //        bufferedWriter.write(String.valueOf(result));
 //        bufferedWriter.newLine();
 //
 //        bufferedWriter.close();
-        bufferedReader.close();
-        scanner.close();
-    }
+		bufferedReader.close();
+		scanner.close();
+	}
 
 }
