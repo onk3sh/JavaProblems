@@ -34,7 +34,7 @@ public class FootballSelectionApplicationDesign {
 
 	static class Player {
 
-		int MAX_BMI = 23, MIN_GOALS = 50, MIN_DEFENDS = 30;
+		static final int MAX_BMI = 23, MIN_GOALS = 50, MIN_DEFENDS = 30;
 		double MIN_HEIGHT = 5.8;
 
 		public String name;
@@ -164,7 +164,7 @@ public class FootballSelectionApplicationDesign {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
 		int applicationsRows = Integer.parseInt(bufferedReader.readLine().trim());
-//		int applicationsColumns = Integer.parseInt(bufferedReader.readLine().trim());
+		int applicationsColumns = Integer.parseInt(bufferedReader.readLine().trim());
 
 		List<List<String>> applications = new ArrayList<>();
 
